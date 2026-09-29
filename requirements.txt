@@ -1,0 +1,28 @@
+# Core Web UI & Application Framework
+streamlit>=1.32.0
+pandas>=2.0.0
+
+# Backend REST API Engine
+fastapi>=0.110.0
+uvicorn>=0.28.0
+pydantic>=2.6.0
+python-multipart>=0.0.9
+
+# Database & ORM
+sqlalchemy>=2.0.0
+pymysql>=1.1.0
+
+# OCR & Document Processing
+pymupdf>=1.24.0
+python-docx>=1.1.0
+pytesseract>=0.3.10
+
+# Image Pre-processing & Computer Vision
+pillow>=10.0.0
+opencv-python>=4.8.0
+
+# AI Evaluation, NLP & Machine Learning
+scikit-learn>=1.4.0
+
+# Environment Configuration
+python-dotenv>=1.0.0
