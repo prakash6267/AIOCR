@@ -27,9 +27,49 @@ def ensure_dependencies():
         missing = True
 
     if missing:
-        print("[1/2] Installing required packages (streamlit, PyMuPDF, pillow, scikit-learn)...")
+        print("[1/3] Installing required packages (streamlit, PyMuPDF, pillow, scikit-learn)...")
         subprocess.run([sys.executable, "-m", "pip", "install", "streamlit", "PyMuPDF", "pillow", "scikit-learn"], check=True)
 
+def check_or_start_ollama():
+    """Check if Ollama is running, and automatically start it in the background if installed."""
+    import urllib.request
+    import shutil
+    import json
+
+    # 1. Check if Ollama is already active on port 11434
+    try:
+        with urllib.request.urlopen("http://localhost:11434/api/tags", timeout=1.5) as resp:
+            data = json.loads(resp.read().decode())
+            models = [m.get("name", "") for m in data.get("models", [])]
+            if models:
+                print(f"[Ollama] Service is RUNNING with models: {', '.join(models[:3])}")
+            else:
+                print("[Ollama] Service is RUNNING on http://localhost:11434.")
+                print("         (Tip: Run 'ollama pull phi3' or 'llama3' for LLM inference, or use built-in NLP fallback)")
+            return True
+    except Exception:
+        pass
+
+    # 2. If not running, attempt to start 'ollama serve' in background if installed
+    ollama_path = shutil.which("ollama")
+    if ollama_path:
+        try:
+            print("[Ollama] Starting local Ollama service in the background...")
+            subprocess.Popen(
+                [ollama_path, "serve"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)
+            )
+            time.sleep(2)
+            print("[Ollama] Service started successfully on http://localhost:11434.")
+            return True
+        except Exception as e:
+            print(f"[Ollama] Notice: Could not auto-launch Ollama ({e}). Built-in NLP fallback will be active.")
+            return False
+    else:
+        print("[Ollama] Notice: Ollama not installed. Built-in resilient Semantic NLP fallback will be active.")
+        return False
 
 def main():
     print_banner()
@@ -37,15 +77,16 @@ def main():
     app_file = os.path.join(root_dir, "app.py")
 
     ensure_dependencies()
+    check_or_start_ollama()
 
     try:
         import create_aiml_docx
         create_aiml_docx.build_all_docx()
-        print("📄 Generated benchmark files: AIML_Master_Answer_Key.docx & AIML_Student_Answer_Sheet.docx")
+        print("Generated benchmark files: AIML_Master_Answer_Key.docx & AIML_Student_Answer_Sheet.docx")
     except Exception as e:
         print(f"Warning building benchmark docx: {e}")
 
-    print("[2/2] Launching Streamlit Web App on http://localhost:8501 ...")
+    print("[Launch] Starting Streamlit Web App on http://localhost:8501 ...")
     
     streamlit_cmd = [
         sys.executable, "-m", "streamlit", "run", app_file,

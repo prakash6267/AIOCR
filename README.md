@@ -76,12 +76,10 @@ This single command will:
 AIOCR/
 ├── app.py                      # Main Streamlit Web Application (Multi-tab UI & Camera Viewport)
 ├── run.py                      # One-command unified launcher (runs Streamlit on port 8501)
-├── PROJECT_SYNOPSIS.md         # Comprehensive Project Synopsis Document
-├── AI_OCR_Knowledge_Transfer_Document.md # Technical Knowledge Transfer (KT) Document
-├── AI_OCR_Hackathon_Presentation_Deck.md # Presentation Deck Outline
 ├── create_aiml_docx.py          # Benchmark AI/ML test paper generator
-├── generate_kt_pdf.py          # PDF Knowledge Transfer Document generator
-├── generate_presentation_pptx.py # Presentation generator script
+├── requirements.txt            # Python dependencies
+├── AIML_Master_Answer_Key.docx # Benchmark Master Solution Key
+├── AIML_Student_Answer_Sheet.docx # Benchmark Student Submission
 ├── backend/
 │   ├── app/
 │   │   ├── main.py             # FastAPI API endpoints
